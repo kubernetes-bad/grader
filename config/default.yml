@@ -1,0 +1,34 @@
+db:
+  host: "host.docker.internal"
+  port: 3306
+  user: "root"
+  password: ""
+  database: "grader"
+
+port: 4000
+
+data:
+  id: id
+  title: {}
+#    title: "Title"
+
+  tables:
+    input: input
+    grades: grades
+
+  fields: {}
+#    column1: "Column 1 Label"
+#    column2: "Column 2 Label"
+
+  buttons:
+    good:
+      label: Good
+      color: green
+      keyboardButton: "1" # has to be a string!
+    bad:
+      label: Bad
+      color: red
+      keyboardButton: "2"
+    skip:
+      label: Skip
+      keyboardButton: "3"

@@ -1,0 +1,36 @@
+image:
+  repository: example.com/kubernetes-bad/grader
+  tag: latest
+  pullPolicy: Always
+  pullSecrets: []
+
+port: 5000
+
+# passed to mysql chart, see https://github.com/bitnami/charts/tree/main/bitnami/mariadb
+mariadb:
+  image:
+    registry: docker.io
+    repository: bitnami/mariadb
+    tag: 10.11-debian-11
+    pullPolicy: Always
+  auth:
+    database: grader
+    username: grader
+    existingSecret: db-credentials
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+
+ingress:
+  enabled: true
+  host: grader.example.com
+  path: /
+  annotations: {}
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+configMap:
+  name: grader-config

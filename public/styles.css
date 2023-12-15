@@ -1,0 +1,65 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(20, 20, 20);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*height: 100vh;*/
+    color: #f8f8f2;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+#record-container {
+    background-color: #282a36;
+    padding: 0.2em 0 50px;
+    border-radius: 10px;
+}
+
+#record-details {
+    border: 1px solid #444;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+#buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media (max-width: 768px) {
+    #buttons {
+        position: fixed;
+        width: 100%; /* Make the buttons panel take the full width of the screen */
+        bottom: 0;
+        left: 0;
+        text-align: center; /* Center-align the buttons within the full width */
+        transform: none; /* Remove horizontal centering */
+    }
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#settings {
+    position: absolute;
+    top: 0;
+    right: 10px;
+}

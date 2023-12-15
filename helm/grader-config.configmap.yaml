@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grader-config
+  namespace: grader
+data:
+  local.yml: |
+    port: 5000
+    data:
+      tables:
+        input: chub-filtered
+        grades: chub-graded
+      id: id
+      title:
+        name: "Name"
+    
+      fields:
+        scenario: "Scenario"
+        personality: "Personality"

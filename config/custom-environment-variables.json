@@ -1,0 +1,10 @@
+{
+  "db": {
+    "host": "GRADER_DB_HOST",
+    "port": "GRADER_DB_PORT",
+    "user": "GRADER_DB_USER",
+    "password": "GRADER_DB_PASSWORD",
+    "database": "GRADER_DB_DATABASE"
+  },
+  "port": "GRADER_PORT"
+}

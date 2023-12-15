@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  grader:
+    build: .
+    container_name: grader
+    restart: unless-stopped
+    ports:
+      - '4000:4000'

@@ -1,0 +1,21 @@
+{
+  "name": "grader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "start:debug": "node --inspect=0.0.0.0 server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "config": "^3.3.9",
+    "express": "^4.18.2",
+    "js-yaml": "^4.1.0",
+    "knex": "^2.5.1",
+    "mysql2": "^3.6.1"
+  }
+}
