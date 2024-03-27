@@ -6,3 +6,4 @@ helm/charts/
 config/local.yml
 .idea/
 grader.iml
+db/

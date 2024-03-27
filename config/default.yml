@@ -1,8 +1,8 @@
 db:
   host: "host.docker.internal"
   port: 3306
-  user: "root"
-  password: ""
+  user: "grader"
+  password: "pessword123"
   database: "grader"
 
 port: 4000

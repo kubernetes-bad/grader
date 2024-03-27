@@ -1,7 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const config = require('config');
-const db = require('./db.js');
+import express from 'express';
+import bodyParser from 'body-parser';
+import config from 'config';
+import db from './db.mjs';
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,6 +10,32 @@ app.use(express.static('public'));
 const INPUT_TABLE = config.get('data.tables.input');
 const GRADES_TABLE = config.get('data.tables.grades');
 const ID_COL = config.get('data.id');
+
+// init db if not inited
+const hasInputTable = await db.schema.hasTable(INPUT_TABLE);
+const hasGradesTable = await db.schema.hasTable(GRADES_TABLE);
+
+if (!hasInputTable) {
+  await db.schema.createTable(INPUT_TABLE, (table) => {
+    table.increments(ID_COL).unique();
+
+    const titleField = Object.keys(config.get('data.title'))[0];
+    table.text(titleField);
+
+    Object.keys(config.get('data.fields')).forEach((field) => {
+      table.text(field);
+    });
+  })
+  console.log('Input data table was not found - empty data table created');
+}
+
+if (!hasGradesTable) {
+  await db.schema.createTable(GRADES_TABLE, (table) => {
+    table.increments(ID_COL).unique();
+    table.string('grade');
+  });
+  console.log('Grades data table was not found - empty data table created');
+}
 
 app.get('/next', async (req, res) => {
   const fields = Object.entries(config.get('data.fields'))

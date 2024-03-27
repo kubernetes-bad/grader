@@ -1,6 +1,22 @@
 version: "3.8"
 
 services:
+  db:
+    image: mysql:8
+    container_name: grader-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: 'grader'
+      MYSQL_USER: 'grader'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'pesswerd123'
+      MYSQL_ROOT_PASSWORD: 'pesswerd123'
+    ports:
+      # OPTIONAL!
+      - '3309:3306'
+    volumes:
+      - ./db:/var/lib/mysql
+  
   grader:
     build: .
     container_name: grader

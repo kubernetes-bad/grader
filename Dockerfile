@@ -5,4 +5,4 @@ COPY . /app
 
 RUN npm install
 
-CMD node server.js
+CMD node src/server.mjs
