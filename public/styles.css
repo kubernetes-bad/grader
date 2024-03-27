@@ -42,6 +42,9 @@ body {
         text-align: center; /* Center-align the buttons within the full width */
         transform: none; /* Remove horizontal centering */
     }
+    .image-field {
+        max-width: 100%;
+    }
 }
 
 button {
@@ -62,4 +65,8 @@ button:hover {
     position: absolute;
     top: 0;
     right: 10px;
+}
+
+.image-field {
+    max-width: 20em;
 }

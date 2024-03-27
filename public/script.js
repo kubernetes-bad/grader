@@ -84,6 +84,14 @@ async function fetchRecord() {
       // populate fields as set in config
       Object.entries(window.config.fields)
         .map(([column, label]) => {
+          // special case: image
+          if (column === "image") {
+            const img = document.createElement('img');
+            img.src = record[column];
+            img.classList = ["image-field"];
+            return img;
+          }
+
           if (!record[column]) return; // skip empty Ps
           const p = document.createElement('p');
           p.id = `record-${column}`;
