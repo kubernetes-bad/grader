@@ -5,5 +5,5 @@ helm/myvalues.yml
 helm/charts/
 config/local.yml
 .idea/
-grader.iml
+*.iml
 db/
