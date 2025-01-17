@@ -3,8 +3,13 @@ const fieldsContainer = document.getElementById('record-details');
 const buttonContainer = document.getElementById('buttons');
 const recordsLeft = document.getElementById('records-left');
 const ttsCheckbox = document.getElementById('tts-checkbox');
+const barCheckbox = document.getElementById('bar-checkbox');
+const controlBar = document.getElementById('control-bar');
+const topTapIndicator = document.getElementById('top-tap');
+const bottomTapIndicator = document.getElementById('bottom-tap');
 
 const KEY_SPEECH = '`';
+const VOICE = 'Samantha';
 
 const KEYBOARD_TO_JOYCON = {
   "1": { L: 0, R: 3 },
@@ -19,12 +24,29 @@ const utterance = new SpeechSynthesisUtterance();
 let ttsEnabled = localStorage.getItem('ttsEnabled') === 'true';
 ttsCheckbox.checked = ttsEnabled;
 
+let barEnabled = localStorage.getItem('barEnabled') === 'true';
+barCheckbox.checked = barEnabled;
+controlBar.style.display = barEnabled ? 'block' : 'none';
+
+
+function getVoiceByName(name) {
+  const voices = speechSynthesis.getVoices();
+  return voices.filter(v => v.lang === 'en-US')
+    .find(v => v.name === name);
+}
+
 ttsCheckbox.addEventListener('change', (event) => {
   ttsEnabled = event.target.checked;
   localStorage.setItem('ttsEnabled', ttsEnabled);
   new SpeechSynthesisUtterance('');
   speakCurrentRecord();
 });
+
+barCheckbox.addEventListener('change', (event) => {
+  barEnabled = event.target.checked;
+  localStorage.setItem('barEnabled', barEnabled);
+  controlBar.style.display = barEnabled ? 'block' : 'none';
+})
 
 window.currentRecord = null; // holds currently loaded record
 window.config = null;
@@ -34,6 +56,7 @@ function speakText(text) {
   speechSynthesis.cancel();
   if (!ttsEnabled) return;
   utterance.text = text;
+  utterance.voice = getVoiceByName(VOICE);
   speechSynthesis.speak(utterance);
 }
 
@@ -111,6 +134,7 @@ function grade(gradeValue) {
   return function () {
     const id = window.currentRecord.id;
     console.dir(`GRADING #${id} AS ${gradeValue}`);
+    speakText(`Graded as ${gradeValue}`);
     fetch('/grade', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -222,3 +246,85 @@ const replaceStubs = (input, charName)=> {
     .replaceAll('{{char}}', charName)
     .replaceAll('{{Char}}', charName);
 }
+
+let isInsideControlBar = false;
+let startX, startY;
+let isSwiping = false; // To differentiate between swipes and taps
+
+const touchHandler = {
+  start: (e) => {
+    if (!barEnabled) return;
+    const touch = e.touches[0];
+    const barRect = controlBar.getBoundingClientRect();
+    isInsideControlBar = (
+      touch.clientX >= barRect.left &&
+      touch.clientX <= barRect.right &&
+      touch.clientY >= barRect.top &&
+      touch.clientY <= barRect.bottom
+    );
+
+    if (!isInsideControlBar) {
+      return;
+    }
+
+    e.preventDefault();
+    startX = touch.clientX / window.innerWidth;
+    startY = touch.clientY / window.innerHeight;
+    isSwiping = false; // Reset swipe flag on touch start
+  },
+
+  move: (e) => {
+    if (!barEnabled) return;
+    if (!isInsideControlBar) return;
+
+    e.preventDefault();
+    const touch = e.touches[0];
+    const currentX = touch.clientX / window.innerWidth;
+    const currentY = touch.clientY / window.innerHeight;
+    const deltaX = currentX - startX;
+    const deltaY = currentY - startY;
+
+    const SWIPE_THRESHOLD = 0.24;
+    if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
+      isSwiping = true; // Mark as swipe if threshold is exceeded
+      console.log(`Vertical swipe detected: ${deltaY > 0 ? 'down' : 'up'}`);
+      handleSwipe(deltaY > 0);
+    }
+  },
+
+  end: (e) => {
+    if (!barEnabled) return;
+    if (!isInsideControlBar) return;
+
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    const currentY = touch.clientY / window.innerHeight;
+
+    // Only check for taps if we haven't detected a swipe
+    if (!isSwiping) {
+      const topRect = topTapIndicator.getBoundingClientRect();
+      const bottomRect = bottomTapIndicator.getBoundingClientRect();
+      const tolerance = 20;
+
+      // Check if the end position is near either tap zone
+      if (Math.abs(touch.clientY - (topRect.top + topRect.height/2)) < tolerance) {
+        console.log('Tap detected in top zone!');
+        handleTap();
+      } else if (Math.abs(touch.clientY - (bottomRect.top + bottomRect.height/2)) < tolerance) {
+        console.log('Tap detected in bottom zone!');
+        handleTap();
+      }
+    }
+  }
+};
+
+function handleTap() {
+  grade('good')();
+}
+function handleSwipe(isDown) {
+  return grade(isDown ? 'skip' : 'bad')();
+}
+
+controlBar.addEventListener('touchstart', touchHandler.start, { passive: false });
+controlBar.addEventListener('touchmove', touchHandler.move, { passive: false });
+controlBar.addEventListener('touchend', touchHandler.end, { passive: false });

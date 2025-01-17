@@ -70,3 +70,31 @@ button:hover {
 .image-field {
     max-width: 20em;
 }
+
+#control-bar {
+    position: fixed;
+    left: 105px;
+    top: 50px;
+    transform-origin: top center;
+    width: 50px;
+    height: 710px;
+    background: rgba(0, 100, 255, 0.2);
+    border-radius: 20px;
+    z-index: 1000;
+}
+
+.tap-indicator {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+}
+
+#top-tap {
+    top: 37%;
+}
+
+#bottom-tap {
+    bottom: 29%;
+}
